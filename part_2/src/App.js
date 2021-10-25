@@ -3,7 +3,7 @@ import React from "react";
 const App = () => {
   return(
     <di>
-      Hello stephen
+      Hello stephen wayar
     </di>
   )
 }
