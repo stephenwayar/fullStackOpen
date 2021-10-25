@@ -84,7 +84,7 @@ import React, { useState } from "react";
 
 //     </div>
 //   )
-// }
+// };
 
 const App = () => {
 
@@ -103,16 +103,14 @@ const App = () => {
     'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
 
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
-  ]
+  ];
 
   const [anecdote, setAnecdote] = useState(0);
 
-  const madness = () => {
-    const randomNum = Math.floor(Math.random() * (7 - 0) + 0)
-    setAnecdote(randomNum)
-  }
-
-
+  const handleClick = () => {
+    const randomNum = Math.floor(Math.random() * (7 - 0) + 0);
+    setAnecdote(randomNum);
+  };
 
   console.log(anecdote)
 
@@ -120,6 +118,7 @@ const App = () => {
     <div>
 
       <p>{anecdotes[anecdote]}</p>
+      <button>Vote</button>
       <button onClick={handleClick}>Next</button>
 
     </div>
