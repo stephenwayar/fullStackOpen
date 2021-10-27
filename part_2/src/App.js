@@ -3,7 +3,6 @@ import React from "react";
 const MyNote = ({id, content, date, important}) => {
   return(
     <div>
-      <p>{id}</p>
       <p>{content}</p>
       <p>{date}</p>
       <p>{important}</p>
@@ -34,10 +33,10 @@ const App = () => {
     }
   ];
 
-  console.log(notes.map(note => {
+  console.log(notes.map((note, e) => {
     return(
       <MyNote
-        id={note.id}
+        key={e}
         content={note.content}
         date={note.date}
       />
@@ -46,10 +45,10 @@ const App = () => {
 
   return(
     <div>
-      {notes.map(note => {
+      {notes.map((note, e) => {
         return(
           <MyNote
-            id={note.id}
+            key={e}
             content={note.content}
             date={note.date}
           />
