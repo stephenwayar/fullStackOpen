@@ -1,9 +1,16 @@
 import React from "react";
 
-const Total = ({exercises1, exercises2, exercises3}) => {
+const Total = ({sum}) => {
+
+  const total = sum.reduce((accum, curVal) => {
+    return(accum + curVal.exercises)
+    }, 0)
+
   return(
     <div>
-      <p>Number of exercises {exercises1 + exercises2 + exercises3}</p>
+      <p>
+        Number of exercises: {total}
+      </p>
     </div>
   )
 }
