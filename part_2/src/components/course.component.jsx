@@ -7,11 +7,17 @@ import Total from "./total.component";
 const Course = ({course}) => {
   return(
     <div>
-      <Header course={course.name}/>
+      <Header course={course[0].name}/>
 
-      <Content parts={course.parts}/>
+      <Content parts={course[0].parts}/>
 
-      <Total sum={course.parts}/>
+      <Total sum={course[0].parts}/>
+
+      <Header course={course[1].name}/>
+
+      <Content parts={course[1].parts}/>
+
+      <Total sum={course[1].parts}/>
  
     </div>
   )
