@@ -1,44 +1,40 @@
 import React, {useState} from "react";
-// import Note from "./components/note.component";
+import Note from "./components/note.component";
 
-const App = ({ notes }) => {
+const App = (props) => {
 
-  const [name, setname ] =  useState("")
+  const [notes, setNotes] = useState(props.notes)
+
+  const [vals, setVals] = useState("")
+
+  const addNote = (e) => {
+    e.preventDefault()
+    setNotes(e.target.value)
+  }
 
   const handleChange = (e) => {
-    setname(e.target.value)
+    setVals(e.target.value)
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    alert(`This name you entered is ${name}`)
-  }
+  const nts = notes.map((note, index) => 
+    <Note key={index} note={note} />
+  )
 
-  console.log(name);
+  const som = nts.concat(vals)
 
-  if (name === "") {
-    return(
-      <div>
-        <input type="text" value={name} onChange={handleChange}/>
-        <button>submit</button>
-      </div>
-    )
-  }
+  console.log(notes)
 
   return (
     <div>
-      {/* <h1>Notes</h1>
+      <h1>Notes</h1>
       <ul>
-        {notes.map(note => 
-            <Note key={note.id} note={note} />
-        )}
-      </ul> */}
-    <form onSubmit={handleSubmit}>
-      <label>Enter your name here:</label>
-      <input type="text" value={name} onChange={handleChange}/>
-      <button>submit</button>
-    </form>
-    <p>Hello {name}</p>
+        <li>{som}</li>
+      </ul>   
+
+      <form onSubmit={addNote}>
+        <input  value={vals} onChange={handleChange}/>
+        <button type="submit">save</button>
+      </form>  
     </div>
   )
 }
