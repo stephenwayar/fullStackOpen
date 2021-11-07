@@ -5,34 +5,36 @@ const App = (props) => {
 
   const [notes, setNotes] = useState(props.notes)
 
-  const [vals, setVals] = useState("")
+  const [newNote, setNewNote] = useState("a new note...") 
 
   const addNote = (e) => {
     e.preventDefault()
-    setNotes(e.target.value)
+    const noteObject = {
+      id: notes.lenght + 1,
+      content: newNote,
+      date: new Date().toISOString(),
+      import: Math.random() < 0.5
+    }
+    setNotes(notes.concat(noteObject))
+    setNewNote("")
   }
 
   const handleChange = (e) => {
-    setVals(e.target.value)
+    setNewNote(e.target.value)
+    console.log(notes);
   }
-
-  const nts = notes.map((note, index) => 
-    <Note key={index} note={note} />
-  )
-
-  const som = nts.concat(vals)
-
-  console.log(notes)
 
   return (
     <div>
       <h1>Notes</h1>
       <ul>
-        <li>{som}</li>
+        {notes.map(note => 
+            <Note key={note.id} note={note} />
+        )}
       </ul>   
 
       <form onSubmit={addNote}>
-        <input  value={vals} onChange={handleChange}/>
+        <input value={newNote} onChange={handleChange}/>
         <button type="submit">save</button>
       </form>  
     </div>
