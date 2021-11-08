@@ -5,16 +5,18 @@ const App = (props) => {
 
   const [notes, setNotes] = useState(props.notes)
 
-  const [newNote, setNewNote] = useState("a new note...") 
+  const [newNote, setNewNote] = useState("") 
 
-  const addNote = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
+
     const noteObject = {
       id: notes.lenght + 1,
       content: newNote,
       date: new Date().toISOString(),
       import: Math.random() < 0.5
     }
+
     setNotes(notes.concat(noteObject))
     setNewNote("")
   }
@@ -33,7 +35,7 @@ const App = (props) => {
         )}
       </ul>   
 
-      <form onSubmit={addNote}>
+      <form onSubmit={handleSubmit}>
         <input value={newNote} onChange={handleChange}/>
         <button type="submit">save</button>
       </form>  
