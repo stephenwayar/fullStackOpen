@@ -1,46 +1,50 @@
-import React, {useState} from "react";
+import React from "react";
+import { useState } from "react/cjs/react.development";
 import Note from "./components/note.component";
 
 const App = (props) => {
 
   const [notes, setNotes] = useState(props.notes)
 
-  const [newNote, setNewNote] = useState("") 
+  const [newNotes, setNewNote] = useState("")
 
-  const handleSubmit = (e) => {
+  const [showAll, setShowAll] = useState(true)
+
+  const notesToShow = showAll 
+    ? notes
+    : notes.filter(note => (note.important === true))
+
+  const addNote = e => {
     e.preventDefault()
-
     const noteObject = {
       id: notes.lenght + 1,
-      content: newNote,
-      date: new Date().toISOString(),
-      import: Math.random() < 0.5
+      content: newNotes,
+      date: new Date().toDateString,
+      important: Math.random() < 0.5
     }
-
     setNotes(notes.concat(noteObject))
     setNewNote("")
   }
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setNewNote(e.target.value)
-    console.log(notes);
   }
 
-  return (
+
+  return(
     <div>
       <h1>Notes</h1>
+      <button onClick={() => (setShowAll(!showAll))}>show {showAll ? "important" : "all"}</button>
       <ul>
-        {notes.map(note => 
-            <Note key={note.id} note={note} />
-        )}
-      </ul>   
+        {notesToShow.map(note => (<Note id={note.id} note={note}/>))}
+      </ul>
 
-      <form onSubmit={handleSubmit}>
-        <input value={newNote} onChange={handleChange}/>
-        <button type="submit">save</button>
-      </form>  
+      <form onSubmit={addNote}>
+        <label>Enter Note:</label>
+        <input value={newNotes} onChange={handleChange}/>
+        <button>Submit</button>
+      </form>
     </div>
   )
-}
-
+} 
 export default App;
