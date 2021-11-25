@@ -1,50 +1,48 @@
 import React from "react";
 import { useState } from "react/cjs/react.development";
-import Note from "./components/note.component";
 
-const App = (props) => {
+const Person = ({name}) => {
+  return(
+    <p>{name}</p>
+  )
+}
 
-  const [notes, setNotes] = useState(props.notes)
+const App = () => {
 
-  const [newNotes, setNewNote] = useState("")
+  const [ persons, setPersons ] = useState([
+    { name: 'Arto Hellas' }
+  ]) 
 
-  const [showAll, setShowAll] = useState(true)
-
-  const notesToShow = showAll 
-    ? notes
-    : notes.filter(note => (note.important === true))
-
-  const addNote = e => {
-    e.preventDefault()
-    const noteObject = {
-      id: notes.lenght + 1,
-      content: newNotes,
-      date: new Date().toDateString,
-      important: Math.random() < 0.5
-    }
-    setNotes(notes.concat(noteObject))
-    setNewNote("")
-  }
+  const [ newName, setNewName ] = useState('')
 
   const handleChange = e => {
-    setNewNote(e.target.value)
+    setNewName(e.target.value)
+    console.log(e.target.value);
   }
 
+  const handleSubmit = e => {
+    e.preventDefault()
+    const personObject = {
+      name: newName
+    }
+    setPersons(persons.concat(personObject))
+    setNewName("")
+  }
 
   return(
     <div>
-      <h1>Notes</h1>
-      <button onClick={() => (setShowAll(!showAll))}>show {showAll ? "important" : "all"}</button>
-      <ul>
-        {notesToShow.map(note => (<Note id={note.id} note={note}/>))}
-      </ul>
-
-      <form onSubmit={addNote}>
-        <label>Enter Note:</label>
-        <input value={newNotes} onChange={handleChange}/>
-        <button>Submit</button>
+      <h2>Phonebook</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          name: <input value={newName} onChange={handleChange}/>
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
       </form>
+      
+      {persons.map((person, index) => (<Person key={index} name={person.name}/>))}
     </div>
   )
-} 
+}
 export default App;
