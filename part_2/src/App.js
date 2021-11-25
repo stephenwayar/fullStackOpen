@@ -20,13 +20,19 @@ const App = () => {
     console.log(e.target.value);
   }
 
+  const found = persons.find(person => (person.name === newName))
+
   const handleSubmit = e => {
     e.preventDefault()
     const personObject = {
       name: newName
     }
-    setPersons(persons.concat(personObject))
-    setNewName("")
+    if(found){
+      alert(`${newName} already exists`)
+    }else{
+      setPersons(persons.concat(personObject))
+      setNewName("")
+    }
   }
 
   return(
