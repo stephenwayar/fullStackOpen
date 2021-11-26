@@ -1,23 +1,22 @@
 import React from "react";
+import SearchResult from "./components/searchResult.component";
+import Person from "./components/person.component";
 import { useState } from "react/cjs/react.development";
 
-const Person = ({name, number}) => {
-  return(
-    <p>
-      {name === "" ? "" : <b>Name:</b>} {name} 
-      {number === "" ? "" : <b>Number:</b>} {number}
-    </p>
-  )
-}
- 
 const App = () => {
 
   const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: 123456789 }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23122', id: 4 }
   ]) 
 
-  const [ newName, setNewName ] = useState('')
+  const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
+  const [searchResult, setSearchResult] = useState("")
+
+  const nameFound = persons.find(person => (person.name === newName))
 
   const handleNameChange = e => {
     setNewName(e.target.value)
@@ -29,8 +28,6 @@ const App = () => {
     console.log(ev.target.valuel);
   }
 
-  const nameFound = persons.find(person => (person.name === newName))
-
   const handleSubmit = e => {
     e.preventDefault()
     const personObject = {
@@ -38,7 +35,7 @@ const App = () => {
       number: newNumber
     }
     if(newName === ""){
-      alert("Input cannt be empty")
+      alert("Name input cannt be empty")
     }
     else if(nameFound){
       alert(`${newName} already exists`)
@@ -50,18 +47,38 @@ const App = () => {
     }
   }
 
+  const handleSearchChange = e => {
+    setSearchResult(e.target.value)
+    console.log(e.target.value);
+  }
+
   return(
     <div>
       <h2>Phonebook</h2>
+
+      <p>Search: 
+        <input 
+          value={searchResult} 
+          onChange={handleSearchChange}
+        />
+      </p>
+
+      <div>
+        {persons.filter(person => (person.name === searchResult)).map(filteredPerson => (<SearchResult sResult={filteredPerson.name}/>))}
+      </div>
+
       <form onSubmit={handleSubmit}>
+
         <div>
           name: <input type="text" value={newName} onChange={handleNameChange}/>
           <br />
           number: <input type="number" value={newNumber} onChange={handleNumberChange}/>
         </div>
+
         <div>
           <button type="submit">add</button>
         </div>
+        
       </form>
       
       {persons.map((person, index) => (<Person key={index} name={person.name} number={person.number}/>))}
