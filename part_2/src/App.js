@@ -1,88 +1,59 @@
-import React from "react";
-import SearchResult from "./components/searchResult.component";
-import Person from "./components/person.component";
-import { useState } from "react/cjs/react.development";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
+import Note from "./components/note.component";
 
-const App = () => {
+const App = (props) => {
 
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23122', id: 4 }
-  ]) 
+  const [notes, setNotes] = useState([])
+  const [newNotes, setNewNote] = useState("")
+  const [showAll, setShowAll] = useState(true)
 
-  const [newName, setNewName] = useState("")
-  const [newNumber, setNewNumber] = useState("")
-  const [searchResult, setSearchResult] = useState("")
+  useEffect(() => {
+    console.log("Effect");
+    axios.get("http://localhost:3001/notes").then(res => {
+      console.log("Promise fufilled");
+      setNotes(res.data)
+    })
+  },[])
 
-  const nameFound = persons.find(person => (person.name === newName))
+  console.log("render", notes.length, "notes");
 
-  const handleNameChange = e => {
-    setNewName(e.target.value)
-    console.log(e.target.value);
-  }
+  const notesToShow = showAll 
+    ? notes
+    : notes.filter(note => (note.important === true))
 
-  const handleNumberChange = ev => {
-    setNewNumber(ev.target.value)
-    console.log(ev.target.valuel);
-  }
-
-  const handleSubmit = e => {
+  const addNote = e => {
     e.preventDefault()
-    const personObject = {
-      name: newName,
-      number: newNumber
+    const noteObject = {
+      id: notes.lenght + 1,
+      content: newNotes,
+      date: new Date().toDateString,
+      important: Math.random() < 0.5
     }
-    if(newName === ""){
-      alert("Name input cannt be empty")
-    }
-    else if(nameFound){
-      alert(`${newName} already exists`)
-    }
-    else{
-      setPersons(persons.concat(personObject))
-      setNewName("")
-      setNewNumber("")
-    }
+    setNotes(notes.concat(noteObject))
+    setNewNote("")
   }
 
-  const handleSearchChange = e => {
-    setSearchResult(e.target.value)
-    console.log(e.target.value);
+  const handleChange = e => {
+    setNewNote(e.target.value)
   }
 
   return(
     <div>
-      <h2>Phonebook</h2>
+      <h1>Notes</h1>
+      <button onClick={() => (setShowAll(!showAll))}>
+        show {showAll ? "important" : "all"}
+      </button>
+      <ul>
+        {notesToShow.map(note => (<Note id={note.id} note={note}/>))}
+      </ul>
 
-      <p>Search: 
-        <input 
-          value={searchResult} 
-          onChange={handleSearchChange}
-        />
-      </p>
-
-      <div>
-        {persons.filter(person => (person.name === searchResult)).map(filteredPerson => (<SearchResult sResult={filteredPerson.name}/>))}
-      </div>
-
-      <form onSubmit={handleSubmit}>
-
-        <div>
-          name: <input type="text" value={newName} onChange={handleNameChange}/>
-          <br />
-          number: <input type="number" value={newNumber} onChange={handleNumberChange}/>
-        </div>
-
-        <div>
-          <button type="submit">add</button>
-        </div>
-        
+      <form onSubmit={addNote}>
+        <label>Enter Note:</label>
+        <input value={newNotes} onChange={handleChange}/>
+        <button>Submit</button>
       </form>
-      
-      {persons.map((person, index) => (<Person key={index} name={person.name} number={person.number}/>))}
     </div>
   )
-}
+} 
 export default App;
