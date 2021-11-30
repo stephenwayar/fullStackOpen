@@ -1,90 +1,29 @@
-import React, { useEffect } from "react";
-import SearchResult from "./components/searchResult.component";
-import Person from "./components/person.component";
-import { useState } from "react/cjs/react.development";
+import React, { useEffect, useState } from "react";
+import Result from "./components/Result.component";
 import axios from "axios";
 
 const App = () => {
 
-  const [ persons, setPersons ] = useState([])
-  
+  const [countries, setCountries] = useState([])
+  const [search, setSearch] = useState("")
+
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then(res => {
-      console.log("Promise fufilled!");
-      setPersons(res.data)
+    axios.get("https://restcountries.com/v3.1/all").then(res => {
+      console.log("Promise passed!");
+      const data = res.data.map(datum => (datum.name.common))
+      setCountries(data)
     })
   }, [])
+  
+  const handleSearch = e => setSearch(e.target.value)
 
-  const [newName, setNewName] = useState("")
-  const [newNumber, setNewNumber] = useState("")
-  const [searchResult, setSearchResult] = useState("")
-
-  const nameFound = persons.find(person => (person.name === newName))
-
-  const handleNameChange = e => {
-    setNewName(e.target.value)
-    console.log(e.target.value);
-  }
-
-  const handleNumberChange = ev => {
-    setNewNumber(ev.target.value)
-    console.log(ev.target.valuel);
-  }
-
-  const handleSubmit = e => {
-    e.preventDefault()
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
-    if(newName === ""){
-      alert("Name input cannt be empty")
-    }
-    else if(nameFound){
-      alert(`${newName} already exists`)
-    }
-    else{
-      setPersons(persons.concat(personObject))
-      setNewName("")
-      setNewNumber("")
-    }
-  }
-
-  const handleSearchChange = e => {
-    setSearchResult(e.target.value)
-    console.log(e.target.value);
-  }
+  const filteredResult = countries.filter(country => country.toLowerCase().includes(search.toLowerCase())).map((filtered, index) => (<Result key={index} result={filtered}/>))
 
   return(
     <div>
-      <h2>Phonebook</h2>
-
-      <p>Search: 
-        <input 
-          value={searchResult} 
-          onChange={handleSearchChange}
-        />
-      </p>
-
-      <div>
-        {persons.filter(person => (person.name === searchResult)).map(filteredPerson => (<SearchResult sResult={filteredPerson.name}/>))}
-      </div>
-
-      <form onSubmit={handleSubmit}>
-
-        <div>
-          name: <input type="text" value={newName} onChange={handleNameChange}/>
-          <br />
-          number: <input type="number" value={newNumber} onChange={handleNumberChange}/>
-        </div>
-
-        <div>
-          <button type="submit">add</button>
-        </div>
-        
-      </form>
-      
-      {persons.map((person, index) => (<Person key={index} name={person.name} number={person.number}/>))}
+      <label>Find countries:</label>
+      <input value={search} onChange={handleSearch}/>
+      {search.length > 0 ? filteredResult : ""}
     </div>
   )
 }
