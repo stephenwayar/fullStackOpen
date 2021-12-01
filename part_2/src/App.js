@@ -19,11 +19,26 @@ const App = () => {
 
   const filteredResult = countries.filter(country => country.toLowerCase().includes(search.toLowerCase())).map((filtered, index) => (<Result key={index} result={filtered}/>))
 
+  let sum = ""
+
+  if(filteredResult.length > 0 && filteredResult.length < 11) {
+    sum = filteredResult
+  }
+  else if(search === ""){
+    sum = ""
+  }
+  else if(filteredResult.length > 11){
+    sum = "Too many matches, specify another query"
+  }
+  else if (search !== filteredResult){
+    sum = "Country not found"
+  }
+
   return(
     <div>
       <label>Find countries:</label>
       <input value={search} onChange={handleSearch}/>
-      {search.length > 0 ? filteredResult : ""}
+      <p>{sum}</p>
     </div>
   )
 }

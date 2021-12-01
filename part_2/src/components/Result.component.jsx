@@ -7,4 +7,4 @@ const Result = ({result}) => {
     </div>
   )
 }
-export default Result
+export default Result   
