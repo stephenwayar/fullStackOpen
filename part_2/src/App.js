@@ -16,8 +16,12 @@ const App = () => {
       const countryData = res.data.map(datum => datum)
 
       setCountries(countryData)
+
+      console.log(process.env.REACT_APP_WEATHER_API_KEY)
+
     })
   }, [])
+
 
   const handleSearch = e => setSearch(e.target.value)
 
