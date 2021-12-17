@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Result from "./components/Result.component";
 import axios from "axios";
+import Country from "./components/country";
 
 const App = () => {
 
@@ -8,20 +8,39 @@ const App = () => {
   const [search, setSearch] = useState("")
 
   useEffect(() => {
-    axios.get("https://restcountries.com/v3.1/all").then(res => {
+    axios
+      .get("https://restcountries.com/v3.1/all")
+      .then(res => {
       console.log("Promise passed!");
-      const data = res.data.map(datum => (datum.name.common))
-      setCountries(data)
+
+      const countryData = res.data.map(datum => datum)
+
+      setCountries(countryData)
     })
   }, [])
-  
+
   const handleSearch = e => setSearch(e.target.value)
 
-  const filteredResult = countries.filter(country => country.toLowerCase().includes(search.toLowerCase())).map((filtered, index) => (<Result key={index} result={filtered}/>))
+  const filteredResult = countries
+    .filter(country => country.name.common
+    .toLowerCase()
+    .includes(search.toLowerCase()))
+    .map((filtered, index) => (
+      <Country 
+      key={index} 
+      name={filtered} 
+      capital={filtered} 
+      population={filtered} 
+      flags={filtered}
+      languages={filtered}
+    />
+    ))
 
   let sum = ""
 
-  if(filteredResult.length > 0 && filteredResult.length < 11) {
+  if(filteredResult.length > 0 
+    && 
+    filteredResult.length < 11) {
     sum = filteredResult
   }
   else if(search === ""){
@@ -30,16 +49,17 @@ const App = () => {
   else if(filteredResult.length > 11){
     sum = "Too many matches, specify another query"
   }
-  else if (search !== filteredResult){
+  else if(search !== filteredResult){
     sum = "Country not found"
   }
 
   return(
-    <div>
+    <div className="text-blue-600">
       <label>Find countries:</label>
       <input value={search} onChange={handleSearch}/>
       <p>{sum}</p>
     </div>
   )
 }
+
 export default App;
