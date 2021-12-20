@@ -1,78 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import Country from "./components/country";
+import Note from "./components/note.component";
 
 const App = () => {
 
-  const [countries, setCountries] = useState([])
-  const [search, setSearch] = useState("")
+  const [notes, setNotes] = useState([])
+  const [newNotes, setNewNote] = useState("")
+  const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
+    axios.get("http://localhost:3001/notes").then(res => {
+      console.log("Promise fufilled");
+      setNotes(res.data)
+    })
+  },[notes])
+
+  console.log("rendered", notes.length, "notes");
+
+  const notesToShow = showAll 
+    ? notes
+    : notes.filter(note => (note.important === true))
+
+  const addNote = e => {
+    e.preventDefault()
+
+    const noteObject = {
+      id: notes.lenght + 1,
+      content: newNotes,
+      date: new Date().toDateString,
+      important: Math.random() < 0.5
+    }
 
     axios
-
-      .get("https://restcountries.com/v3.1/all")
-
-      .then(res => {
-
-        console.log("I passed countries API");
-
-        const countryData = res.data.map(datum => datum)
-
-        setCountries(countryData)
-
-      })
-
-      .catch(err => console.log("COUNTRIES API CALL FAILED", err))
-  }, [])
-
-  const handleSearch = e => setSearch(e.target.value)
-
-  const filteredResult = countries
-    .filter(country => country.name.common
-    .toLowerCase()
-    .includes(search.toLowerCase()))
-    .map((filtered, index) => (
-      <Country 
-        key={index} 
-        name={filtered} 
-        capital={filtered} 
-        population={filtered} 
-        flags={filtered}
-        languages={filtered}
-      />
-    ))
-
-  let sum = ""
-
-  if(filteredResult.length > 0 
-    && 
-    filteredResult.length < 11)
-  {
-    sum = filteredResult
+      .post("http://localhost:3001/notes", noteObject)
+      .then(() => setNewNote(""))
   }
 
-  else if(search === "")
-  {
-    sum = ""
-  }
-  else if(filteredResult.length > 11)
-  {
-    sum = "Too many matches, specify another query"
-  }
-  else if(search !== filteredResult)
-  {
-    sum = "Country not found"
-  }
+  const handleChange = e => setNewNote(e.target.value)
 
   return(
-    <div className="text-blue-600">
+    <div>
+      <h1>Notes</h1>
+      {/* Show important notes feature */}
+      <button onClick={() => (setShowAll(!showAll))}>
+        show {showAll ? "important" : "all"}
+      </button>
+      {/*  */}
+      <ul>
+        {notesToShow.map(note => (<Note id={note.id} note={note}/>))}
+      </ul>
 
-      <label>Find countries:</label>
-      <input value={search} onChange={handleSearch}/>
-
-      <div>{sum}</div>
+      <form onSubmit={addNote}>
+        <label>Enter Note:</label>
+        <input value={newNotes} onChange={handleChange}/>
+        <button>Submit</button>
+      </form>
     </div>
   )
-}
+} 
 export default App;
