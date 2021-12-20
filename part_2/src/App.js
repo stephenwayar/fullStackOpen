@@ -13,7 +13,7 @@ const App = () => {
       console.log("Promise fufilled");
       setNotes(res.data)
     })
-  },[notes])
+  },[])
 
   console.log("rendered", notes.length, "notes");
 
@@ -33,7 +33,10 @@ const App = () => {
 
     axios
       .post("http://localhost:3001/notes", noteObject)
-      .then(() => setNewNote(""))
+      .then(res => {
+        setNotes(notes.concat(res.data))
+        setNewNote("")
+      })
   }
 
   const handleChange = e => setNewNote(e.target.value)
