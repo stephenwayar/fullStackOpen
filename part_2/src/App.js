@@ -3,6 +3,7 @@ import SearchResult from "./components/searchResult.component";
 import Person from "./components/person.component";
 import { useState } from "react/cjs/react.development";
 import personService from "./services/persons"
+import axios from "axios";
 
 const App = () => {
 
@@ -24,13 +25,13 @@ const App = () => {
 
   const handleNumberChange = e => setNewNumber(e.target.value)
   
+  const personObject = {
+    name: newName,
+    number: newNumber
+  }
+
   const handleSubmit = e => {
     e.preventDefault()
-
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
 
     if(newName === ""){
       alert("Name input cannt be empty")
@@ -51,7 +52,6 @@ const App = () => {
   }
 
   const handleSearchChange = e => setSearchResult(e.target.value)
-  
 
   const filteredResult = persons
     .filter(person => (
@@ -61,6 +61,24 @@ const App = () => {
       .map(filteredPerson => (
         <SearchResult sResult={filteredPerson.name}/>
       ))
+
+  const deletePerson = (name, iden) => {
+    
+    const confirm = window.confirm(`Are you sure you want to delete ${name}?`)
+
+    if(confirm){
+      axios
+        .delete(`http://localhost:3001/persons/${iden}`)
+        .then(() => {
+          
+          const filter = persons
+            .filter(person => person.id !== iden)
+            .map(newPersons => newPersons)
+
+          setPersons(filter)
+        })
+    }
+  }
 
   return(
     <div>
@@ -91,7 +109,13 @@ const App = () => {
         
       </form>
       
-      {persons.map((person, index) => (<Person key={index} name={person.name} number={person.number}/>))}
+      {persons.map((person, index) => (
+        <Person 
+          key={index} 
+          person={person}
+          handleDelete={() => deletePerson(person.name, person.id)}
+        />
+      ))}
     </div>
   )
 }

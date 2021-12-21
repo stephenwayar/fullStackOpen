@@ -1,11 +1,15 @@
 import React from "react";
 
-const Person = ({name, number}) => {
+const Person = ({person, handleDelete}) => {
   return(
-    <p>
-      {name === "" ? "" : <b>Name:</b>} {name} 
-      {number === "" ? "" : <b> Number:</b>} {number}
-    </p>
+    <div>
+      <p>
+        {person.name === "" ? "" : <b>Name:</b>} {person.name} 
+        {person.number === "" ? "" : <b> Number:</b>} {person.number}
+
+        <button onClick={handleDelete}>delete</button>
+      </p>
+    </div>
   )
 }
 export default Person
