@@ -7,28 +7,46 @@ import axios from "axios";
 
 const App = () => {
 
-  const [ persons, setPersons ] = useState([])
-  
-  useEffect(() => {
-    personService.getAll().then(response => {
-      setPersons(response)
-    })
-  }, [])
+  // Hooks
 
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState("")
   const [newNumber, setNewNumber] = useState("")
   const [searchResult, setSearchResult] = useState("")
+  
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(response => {
+        setPersons(response)
+      })
+  }, [])
+
+  // Variables
+
+  const personObject = {
+    name: newName,
+    number: newNumber
+  }
 
   const nameFound = persons.find(person => (person.name.toLowerCase() === newName.toLowerCase()))
+
+  const filteredResult = persons
+    .filter(person => (
+      person.name
+        .toLowerCase()
+        .includes(searchResult.toLowerCase())))
+        .map(filteredPerson => (
+          <SearchResult sResult={filteredPerson.name}/>
+        ))
+
+  //Event handlers 
 
   const handleNameChange = e => setNewName(e.target.value)
 
   const handleNumberChange = e => setNewNumber(e.target.value)
   
-  const personObject = {
-    name: newName,
-    number: newNumber
-  }
+  const handleSearchChange = e => setSearchResult(e.target.value)
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -51,28 +69,17 @@ const App = () => {
     }
   }
 
-  const handleSearchChange = e => setSearchResult(e.target.value)
-
-  const filteredResult = persons
-    .filter(person => (
-      person.name
-      .toLowerCase()
-      .includes(searchResult.toLowerCase())))
-      .map(filteredPerson => (
-        <SearchResult sResult={filteredPerson.name}/>
-      ))
-
-  const deletePerson = (name, iden) => {
+  const handleDelete = (name, ID) => {
     
     const confirm = window.confirm(`Are you sure you want to delete ${name}?`)
 
     if(confirm){
       axios
-        .delete(`http://localhost:3001/persons/${iden}`)
+        .delete(`http://localhost:3001/persons/${ID}`)
         .then(() => {
-          
+
           const filter = persons
-            .filter(person => person.id !== iden)
+            .filter(person => person.id !== ID)
             .map(newPersons => newPersons)
 
           setPersons(filter)
@@ -113,7 +120,7 @@ const App = () => {
         <Person 
           key={index} 
           person={person}
-          handleDelete={() => deletePerson(person.name, person.id)}
+          handleDelete={() => handleDelete(person.name, person.id)}
         />
       ))}
     </div>
