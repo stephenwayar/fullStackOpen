@@ -27,6 +27,21 @@
       "id": 5,
       "content": "I will be a great dev someday",
       "important": false
+    },
+    {
+      "id": 6,
+      "content": "I know my shit",
+      "important": false
+    },
+    {
+      "id": 7,
+      "content": "nn",
+      "important": true
+    },
+    {
+      "id": 8,
+      "content": "nkk",
+      "important": false
     }
   ]
-}  
+}
