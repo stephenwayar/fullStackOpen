@@ -1,74 +1,106 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect } from "react";
+import SearchResult from "./components/searchResult.component";
+import Person from "./components/person.component";
+import { useState } from "react/cjs/react.development";
 import axios from "axios";
-import Note from "./components/note.component";
 
 const App = () => {
 
-  const [notes, setNotes] = useState([])
-  const [newNotes, setNewNote] = useState("")
-  const [showAll, setShowAll] = useState(true)
-
+  const [ persons, setPersons ] = useState([])
+  
   useEffect(() => {
-    axios.get("http://localhost:3001/notes").then(res => {
-      console.log("Promise fufilled");
-      setNotes(res.data)
+    axios.get("http://localhost:3001/persons").then(res => {
+      console.log("Promise passed!");
+      setPersons(res.data)
     })
-  },[])
+  }, [])
 
-  console.log("rendered", notes.length, "notes");
+  const [newName, setNewName] = useState("")
+  const [newNumber, setNewNumber] = useState("")
+  const [searchResult, setSearchResult] = useState("")
 
-  const notesToShow = showAll 
-    ? notes
-    : notes.filter(note => (note.important === true))
+  const nameFound = persons
+    .find(person => (
+      person.name
+      .toLowerCase() 
+        === 
+      newName
+      .toLowerCase()
+    ))
 
-  const addNote = e => {
+  const handleNameChange = e => setNewName(e.target.value)
+
+  const handleNumberChange = e => setNewNumber(e.target.value)
+  
+  const handleSubmit = e => {
     e.preventDefault()
 
-    const noteObject = {
-      id: notes.lenght + 1,
-      content: newNotes,
-      date: new Date().toDateString,
-      important: Math.random() < 0.5
+    const personObject = {
+      name: newName,
+      number: newNumber
     }
 
-    axios
-      .post("http://localhost:3001/notes", noteObject)
-      .then(res => {
-        setNotes(notes.concat(res.data))
-        setNewNote("")
+    if(newName === ""){
+      alert("Name input cannt be empty")
+    }
+    else if (newNumber === ""){
+      alert("Number input cannot be empty")
+    }
+    else if(nameFound){
+      alert(`${newName} already exists`)
+    }
+    else{
+      axios.post("http://localhost:3001/persons", personObject).then(res => {
+        setPersons(persons.concat(res.data))
+        setNewName("")
+        setNewNumber("")
       })
+    }
   }
 
-  const handleChange = e => setNewNote(e.target.value)
+  const handleSearchChange = e => setSearchResult(e.target.value)
+  
 
-  const toggleImportanceOf = (id) => {
-    console.log('importance of ' + id + ' needs to be toggled')
-  }
+  const filteredResult = persons
+    .filter(person => (
+      person.name
+      .toLowerCase()
+      .includes(searchResult.toLowerCase())))
+      .map(filteredPerson => (
+        <SearchResult sResult={filteredPerson.name}/>
+      ))
 
   return(
     <div>
-      <h1>Notes</h1>
-      {/* Show important notes feature */}
-      <button onClick={() => (setShowAll(!showAll))}>
-        show {showAll ? "important" : "all"}
-      </button>
-      {/*  */}
-      <ul>
-        {notesToShow.map(note => (
-          <Note 
-            id={note.id} 
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
-      </ul>
+      <h2>Phonebook</h2>
 
-      <form onSubmit={addNote}>
-        <label>Enter Note:</label>
-        <input value={newNotes} onChange={handleChange}/>
-        <button>Submit</button>
+      <p>Search: 
+        <input 
+          value={searchResult} 
+          onChange={handleSearchChange}
+        />
+      </p>
+
+      <div>
+        {searchResult.length > 0 ? filteredResult : ""}
+      </div>
+
+      <form onSubmit={handleSubmit}>
+
+        <div>
+          name: <input type="text" value={newName} onChange={handleNameChange}/>
+          <br />
+          number: <input type="number" value={newNumber} onChange={handleNumberChange}/>
+        </div>
+
+        <div>
+          <button type="submit">add</button>
+        </div>
+        
       </form>
+      
+      {persons.map((person, index) => (<Person key={index} name={person.name} number={person.number}/>))}
     </div>
   )
-} 
+}
 export default App;
