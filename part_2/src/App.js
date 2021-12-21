@@ -2,16 +2,15 @@ import React, { useEffect } from "react";
 import SearchResult from "./components/searchResult.component";
 import Person from "./components/person.component";
 import { useState } from "react/cjs/react.development";
-import axios from "axios";
+import personService from "./services/persons"
 
 const App = () => {
 
   const [ persons, setPersons ] = useState([])
   
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then(res => {
-      console.log("Promise passed!");
-      setPersons(res.data)
+    personService.getAll().then(response => {
+      setPersons(response)
     })
   }, [])
 
@@ -19,14 +18,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [searchResult, setSearchResult] = useState("")
 
-  const nameFound = persons
-    .find(person => (
-      person.name
-      .toLowerCase() 
-        === 
-      newName
-      .toLowerCase()
-    ))
+  const nameFound = persons.find(person => (person.name.toLowerCase() === newName.toLowerCase()))
 
   const handleNameChange = e => setNewName(e.target.value)
 
@@ -50,8 +42,8 @@ const App = () => {
       alert(`${newName} already exists`)
     }
     else{
-      axios.post("http://localhost:3001/persons", personObject).then(res => {
-        setPersons(persons.concat(res.data))
+      personService.create(personObject).then(response => {
+        setPersons(persons.concat(response))
         setNewName("")
         setNewNumber("")
       })
