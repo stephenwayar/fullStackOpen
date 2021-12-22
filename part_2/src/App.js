@@ -27,6 +27,7 @@ const App = () => {
   const personObject = {
     name: newName,
     number: newNumber
+    // id: persons.length + 1
   }
 
   const nameFound = persons.find(person => (person.name.toLowerCase() === newName.toLowerCase()))
@@ -58,7 +59,28 @@ const App = () => {
       alert("Number input cannot be empty")
     }
     else if(nameFound){
-      alert(`${newName} already exists`)
+      const confirm = window.confirm(`${newName} already exists, Replace old number with a new one?`)
+
+      if(confirm){
+
+        const idFinder =  persons
+          .filter(person => (
+            person.name
+            .toLowerCase() 
+              === 
+            newName
+            .toLowerCase()))
+          .map(found => found.id)
+
+        const updatedNote = {...personObject, number: newNumber}
+
+        axios
+          .put(`http://localhost:3001/persons/${idFinder}`, updatedNote).then(() => {
+            setNewName("")
+            setNewNumber("")            
+          })
+
+      }
     }
     else{
       personService.create(personObject).then(response => {
