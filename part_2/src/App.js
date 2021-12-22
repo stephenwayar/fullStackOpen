@@ -3,7 +3,6 @@ import SearchResult from "./components/searchResult.component";
 import Person from "./components/person.component";
 import { useState } from "react/cjs/react.development";
 import personService from "./services/persons"
-import axios from "axios";
 
 const App = () => {
 
@@ -27,10 +26,15 @@ const App = () => {
   const personObject = {
     name: newName,
     number: newNumber
-    // id: persons.length + 1
   }
 
-  const nameFound = persons.find(person => (person.name.toLowerCase() === newName.toLowerCase()))
+  const nameFound = persons
+    .find(person => (
+      person.name
+      .toLowerCase() 
+      === 
+      newName
+      .toLowerCase()))
 
   const filteredResult = persons
     .filter(person => (
@@ -59,7 +63,8 @@ const App = () => {
       alert("Number input cannot be empty")
     }
     else if(nameFound){
-      const confirm = window.confirm(`${newName} already exists, Replace old number with a new one?`)
+      const confirm = window
+        .confirm(`${newName} already exists, Replace old number with a new one?`)
 
       if(confirm){
 
@@ -67,43 +72,51 @@ const App = () => {
           .filter(person => (
             person.name
             .toLowerCase() 
-              === 
+            === 
             newName
             .toLowerCase()))
           .map(found => found.id)
 
-        const updatedNote = {...personObject, number: newNumber}
+        const updatedNote = {
+          ...personObject, 
+          number: newNumber
+        }
 
-        axios
-          .put(`http://localhost:3001/persons/${idFinder}`, updatedNote).then(() => {
-            setNewName("")
-            setNewNumber("")            
+        personService
+          .update(idFinder, updatedNote)
+          .then(() => {
+              setNewName("")
+              setNewNumber("")            
           })
 
       }
     }
     else{
-      personService.create(personObject).then(response => {
-        setPersons(persons.concat(response))
-        setNewName("")
-        setNewNumber("")
+      personService
+        .create(personObject).
+        then(response => {
+          setPersons(persons.concat(response))
+          setNewName("")
+          setNewNumber("")
       })
     }
   }
 
   const handleDelete = (name, ID) => {
     
-    const confirm = window.confirm(`Are you sure you want to delete ${name}?`)
+    const confirm = window
+      .confirm(`Are you sure you want to delete ${name}?`)
 
     if(confirm){
-      axios
-        .delete(`http://localhost:3001/persons/${ID}`)
-        .then(() => {
+      
+      const url = `http://localhost:3001/persons/${ID}`
 
+      personService
+        .del(url)
+        .then(() => {
           const filter = persons
             .filter(person => person.id !== ID)
             .map(newPersons => newPersons)
-
           setPersons(filter)
         })
     }

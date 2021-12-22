@@ -9,11 +9,21 @@ const getAll = () => {
   })
 }
 
-const create = (personObject) => {
+const create = personObject => {
   const request = axios.post(baseURl, personObject)
   return request.then(res => {
     return res.data
   })
 }
 
-export default {getAll, create}
+const update = (id, updatedNote) => {
+  const request = axios.put(`${baseURl}/${id}`, updatedNote)
+  return request
+}
+
+const del = deleteURL => {
+  const request = axios.delete(deleteURL)
+  return request
+}
+
+export default {getAll, create, update, del}
