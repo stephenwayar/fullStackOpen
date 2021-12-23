@@ -93,15 +93,17 @@ const App = () => {
           .update(idFinder, updatedNote)
           .then(() => {
               setNewName("")
-              setNewNumber("")            
+              setNewNumber("")
+              setNotification(`Updated ${newNumber} to ${newName}`)
+              setTimeout(() => setNotification(null), 1500)            
           })
 
       }
     }
     else{
       personService
-        .create(personObject).
-        then(response => {
+        .create(personObject)
+        .then(response => {
           setPersons(persons.concat(response))
           setNewName("")
           setNewNumber("")
