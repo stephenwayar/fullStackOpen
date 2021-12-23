@@ -26,4 +26,9 @@ const del = deleteURL => {
   return request
 }
 
-export default {getAll, create, update, del}
+export default {
+  getAll, 
+  create, 
+  update, 
+  del
+}
