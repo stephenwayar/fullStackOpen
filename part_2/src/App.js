@@ -17,6 +17,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("")
   const [searchResult, setSearchResult] = useState("")
   const [notification, setNotification] = useState(null)
+  const [err, setErr] = useState(null)
+
   
   useEffect(() => {
     personService
@@ -97,6 +99,10 @@ const App = () => {
               setNotification(`Updated ${newNumber} to ${newName}`)
               setTimeout(() => setNotification(null), 1500)            
           })
+          .catch(error => {
+            setErr(`Information of ${newName} has already been removed from the server`)
+            setTimeout(() => setErr(null), 1500)
+          })
 
       }
     }
@@ -129,6 +135,12 @@ const App = () => {
             .filter(person => person.id !== ID)
             .map(newPersons => newPersons)
           setPersons(filter)
+          setErr(`${name} was delted succesfully`)
+          setTimeout(() => setErr(null), 1500)
+        })
+        .catch(() => {
+          setErr(`${newName} has already been deleted from the server!`)
+          setTimeout(() => setErr(null), 1500)
         })
     }
   }
@@ -165,6 +177,9 @@ const App = () => {
       <div>
         <SuccessNotification 
           notification={notification} 
+        />
+        <ErrorNotification 
+          err={err}
         />
       </div>
 
