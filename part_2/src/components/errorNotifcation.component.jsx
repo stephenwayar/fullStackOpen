@@ -1,7 +1,7 @@
 import React from "react"
-import "./notfication.styles.css"
+import "./errorNotfication.styles.css"
 
-const Notification = ({ message }) => {
+const ErrorNotification = ({ message }) => {
   if (message === null) {
     return null
   }
@@ -12,4 +12,4 @@ const Notification = ({ message }) => {
     </div>
   )
 }
-export default Notification
+export default ErrorNotification
