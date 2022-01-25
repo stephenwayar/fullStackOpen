@@ -1,3 +1,6 @@
 {
-  "workbench.productIconTheme": "material-product-icons"
+  "workbench.productIconTheme": "material-product-icons",
+  "workbench.colorTheme": "CodeSandbox Legacy",
+  "workbench.preferredDarkColorTheme": "One Dark Vivid",
+  "oneDark.bold": true
 }
