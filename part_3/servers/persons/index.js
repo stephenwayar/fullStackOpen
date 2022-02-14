@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-// app.use(express.json())
+app.use(express.json())
 
 let persons = [
   { 
@@ -29,6 +29,13 @@ const date = new Date()
 
 app.get('/api/persons', (req, res) => {
   res.json(persons)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const personObj = persons.find(person => person.id === id)
+  if(personObj){res.json(personObj)}
+  else{res.status(404).end()}
 })
 
 app.get('/api/info', (req, res) => {
