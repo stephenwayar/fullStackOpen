@@ -51,6 +51,17 @@ app.get('/api/info', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   const body = req.body
+  const nameFinder = persons.find(person => person.name === body.name)
+
+  if(!body.name || !body.number){
+    return res.status(400).json({
+      errMessage: "Name or Number content missing"
+    })
+  }else if(nameFinder){
+    return res.status(400).json({
+      errMessage: "Name must be unique"
+    })
+  }
 
   const person = {
     id: generateId(),
