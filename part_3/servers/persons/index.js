@@ -27,6 +27,13 @@ let persons = [
 
 const date = new Date()
 
+function generateId(){
+  const maxId = persons.length > 0 
+    ? Math.max(...persons.map(person => person.id)) 
+    : 0
+  return maxId + 1  
+}
+
 app.get('/api/persons', (req, res) => {
   res.json(persons)
 })
@@ -40,6 +47,19 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.get('/api/info', (req, res) => {
   res.status(200).send(`<h3>Phonebook has info for ${persons.length} people.</h3> <br> ${date}`)
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number
+  }
+  persons = persons.concat(person)
+  console.log(persons)
+  res.json(person)
 })
 
 app.delete('/api/persons/:id', (req, res) => {
